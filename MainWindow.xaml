@@ -7,7 +7,7 @@
         Background="#FF1E1E2E">
 
     <Window.Resources>
-            <Style x:Key="ChatBubbleUser" TargetType="Border">
+        <Style x:Key="ChatBubbleUser" TargetType="Border">
             <Setter Property="Background" Value="#FF6366F1"/>
             <Setter Property="CornerRadius" Value="15,15,5,15"/>
             <Setter Property="Padding" Value="12,8"/>
@@ -39,36 +39,33 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <!--Header-->
         <Border Grid.Row="0" Background="#FF7C3AED" Padding="20">
             <StackPanel>
                 <TextBlock x:Name="WelcomeText" 
-                          Text="Good morning. Welcome to Stitch your personal cyber security chatbot."
-                          Foreground="White" 
-                          FontSize="18" 
-                          FontWeight="Bold"
-                          TextAlignment="Center"/>
+                           Text="Good morning. Welcome to Stitch your personal cyber security chatbot."
+                           Foreground="White" 
+                           FontSize="18" 
+                           FontWeight="Bold"
+                           TextAlignment="Center"/>
 
-                <!--ASCII Art-->
                 <TextBlock Text="S T I T C H"
-                          Foreground="White"
-                          FontFamily="Consolas"
-                          FontSize="24"
-                          FontWeight="Bold"
-                          TextAlignment="Center"
-                          Margin="0,10,0,0"/>
+                           Foreground="White"
+                           FontFamily="Consolas"
+                           FontSize="24"
+                           FontWeight="Bold"
+                           TextAlignment="Center"
+                           Margin="0,10,0,0"/>
 
                 <TextBlock x:Name="UserGreetingText"
-                          Text="Hello User, I am Stitch. Ask me about password safety, phishing, and safe browsing."
-                          Foreground="White"
-                          FontSize="14"
-                          TextAlignment="Center"
-                          Margin="0,10,0,0"
-                          TextWrapping="Wrap"/>
+                           Text="Hello User, I am Stitch. Ask me about password safety, phishing, and safe browsing."
+                           Foreground="White"
+                           FontSize="14"
+                           TextAlignment="Center"
+                           Margin="0,10,0,0"
+                           TextWrapping="Wrap"/>
             </StackPanel>
         </Border>
 
-        <!--Chat-->
         <Border Grid.Row="1" Background="#FF111827" Margin="10">
             <ScrollViewer x:Name="ChatScrollViewer" 
                          VerticalScrollBarVisibility="Auto"
@@ -77,17 +74,26 @@
             </ScrollViewer>
         </Border>
 
-        <!--User Info-->
         <Border Grid.Row="2" Background="#FF374151" Padding="10" Margin="10,0">
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Text="User:" Foreground="White" FontWeight="Bold" Margin="0,0,10,0"/>
-                <TextBlock x:Name="UserNameDisplay" Text="Not set" Foreground="#FF6366F1" FontWeight="Bold"/>
-                <TextBlock Text="Interests:" Foreground="White" FontWeight="Bold" Margin="20,0,10,0"/>
-                <TextBlock x:Name="InterestsDisplay" Text="None" Foreground="#FFF59E0B" TextWrapping="Wrap"/>
-            </StackPanel>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="User:" Foreground="White" FontWeight="Bold" Margin="0,0,10,0"/>
+                    <TextBlock x:Name="UserNameDisplay" Text="Not set" Foreground="#FF6366F1" FontWeight="Bold"/>
+                    <TextBlock Text="Interests:" Foreground="White" FontWeight="Bold" Margin="20,0,10,0"/>
+                    <TextBlock x:Name="InterestsDisplay" Text="None" Foreground="#FFF59E0B" TextWrapping="Wrap"/>
+                    <TextBlock x:Name="MoodDisplay" Text="Unknown" Foreground="#FF10B981" Margin="20,0,10,0"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button x:Name="ViewTasksButton" Content="View Tasks" Click="ViewTasksButton_Click" Margin="0,0,10,0" Padding="10,5"/>
+                    <Button x:Name="StartQuizButton" Content="Start Quiz" Click="StartQuizButton_Click" Padding="10,5"/>
+                </StackPanel>
+            </Grid>
         </Border>
 
-        <!--Input-->
         <Border Grid.Row="3" Background="#FF374151" Padding="15">
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -109,7 +115,8 @@
                         MaxHeight="100"
                         VerticalScrollBarVisibility="Auto"
                         KeyDown="UserInputBox_KeyDown"
-                        IsEnabled="False"/>
+                        IsEnabled="False"
+                        TextChanged="UserInputBox_TextChanged"/>
 
                 <Button x:Name="SendButton"
                        Grid.Column="1"
@@ -137,7 +144,6 @@
             </Grid>
         </Border>
 
-       
         <Border x:Name="NameInputDialog"
                Grid.RowSpan="4"
                Background="#AA000000"
@@ -180,6 +186,40 @@
                            Margin="0,15,0,0"
                            BorderThickness="0"
                            Click="NameSubmitButton_Click"/>
+                </StackPanel>
+            </Border>
+        </Border>
+
+        <Border x:Name="TaskPopup" Grid.RowSpan="4" Background="#AA000000" Visibility="Collapsed">
+            <Border Background="#FF1E1E2E" Padding="20" CornerRadius="10" HorizontalAlignment="Center" VerticalAlignment="Center" MinWidth="400" MinHeight="300">
+                <StackPanel>
+                    <TextBlock Text="Task Manager" Foreground="White" FontSize="18" FontWeight="Bold" TextAlignment="Center" Margin="0,0,0,10"/>
+                    <TextBlock Text="Task Title:" Foreground="White" FontSize="14" FontWeight="Bold" Margin="0,0,0,5"/>
+                    <TextBox x:Name="TaskTitleBox" Background="#FF374151" Foreground="White" Padding="10" Margin="0,0,0,5" TextChanged="TaskTitleBox_TextChanged"/>
+                    <TextBlock Text="Description:" Foreground="White" FontSize="14" FontWeight="Bold" Margin="0,0,0,5"/>
+                    <TextBox x:Name="TaskDescriptionBox" Background="#FF374151" Foreground="White" Padding="10" Margin="0,0,0,5" TextWrapping="Wrap" Height="60" TextChanged="TaskDescriptionBox_TextChanged"/>
+                    <TextBlock Text="Reminder Date:" Foreground="White" FontSize="14" FontWeight="Bold" Margin="0,0,0,5"/>
+                    <DatePicker x:Name="TaskReminderDate" Margin="0,0,0,5"/>
+                    <Button x:Name="AddTaskButton" Content="Add Task" Click="AddTaskButton_Click" Padding="10,5" Margin="0,0,0,10"/>
+                    <ListBox x:Name="TaskListBox" Height="150" Background="#FF374151" Foreground="White"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Button x:Name="DeleteTaskButton" Content="Delete" Click="DeleteTaskButton_Click" Padding="10,5" Margin="0,0,10,0"/>
+                        <Button x:Name="CompleteTaskButton" Content="Mark Complete" Click="CompleteTaskButton_Click" Padding="10,5"/>
+                    </StackPanel>
+                    <Button x:Name="CloseTaskPopupButton" Content="Close" Click="CloseTaskPopupButton_Click" Padding="10,5" HorizontalAlignment="Right"/>
+                </StackPanel>
+            </Border>
+        </Border>
+
+        <Border x:Name="QuizPopup" Grid.RowSpan="4" Background="#AA000000" Visibility="Collapsed">
+            <Border Background="#FF1E1E2E" Padding="20" CornerRadius="10" HorizontalAlignment="Center" VerticalAlignment="Center" MinWidth="400" MinHeight="300">
+                <StackPanel>
+                    <TextBlock x:Name="QuizQuestionText" Text="Question will appear here" Foreground="White" FontSize="16" TextAlignment="Center" Margin="0,0,0,10"/>
+                    <ListBox x:Name="QuizOptionsList" Height="100" Background="#FF374151" Foreground="White"/>
+                    <Button x:Name="SubmitAnswerButton" Content="Submit Answer" Click="SubmitAnswerButton_Click" Padding="10,5" Margin="0,10,0,0"/>
+                    <TextBlock x:Name="QuizFeedbackText" Text="" Foreground="White" FontSize="14" TextAlignment="Center" Margin="0,10,0,0"/>
+                    <TextBlock x:Name="QuizScoreText" Text="Score: 0/10" Foreground="#FFF59E0B" FontSize="14" TextAlignment="Center" Margin="0,10,0,0"/>
+                    <Button x:Name="EndQuizButton" Content="End Quiz" Click="EndQuizButton_Click" Padding="10,5" HorizontalAlignment="Right"/>
                 </StackPanel>
             </Border>
         </Border>

@@ -1,0 +1,187 @@
+﻿<Window x:Class="ST10439055_PROG_POE_WPF.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Stitch - Cybersecurity Assistant" Height="700" Width="900"
+        MinHeight="500" MinWidth="700"
+        WindowStartupLocation="CenterScreen"
+        Background="#FF1E1E2E">
+
+    <Window.Resources>
+            <Style x:Key="ChatBubbleUser" TargetType="Border">
+            <Setter Property="Background" Value="#FF6366F1"/>
+            <Setter Property="CornerRadius" Value="15,15,5,15"/>
+            <Setter Property="Padding" Value="12,8"/>
+            <Setter Property="Margin" Value="50,5,10,5"/>
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+        </Style>
+
+        <Style x:Key="ChatBubbleBot" TargetType="Border">
+            <Setter Property="Background" Value="#FF374151"/>
+            <Setter Property="CornerRadius" Value="15,15,15,5"/>
+            <Setter Property="Padding" Value="12,8"/>
+            <Setter Property="Margin" Value="10,5,50,5"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+        </Style>
+
+        <Style x:Key="ChatText" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="LineHeight" Value="20"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!--Header-->
+        <Border Grid.Row="0" Background="#FF7C3AED" Padding="20">
+            <StackPanel>
+                <TextBlock x:Name="WelcomeText" 
+                          Text="Good morning. Welcome to Stitch your personal cyber security chatbot."
+                          Foreground="White" 
+                          FontSize="18" 
+                          FontWeight="Bold"
+                          TextAlignment="Center"/>
+
+                <!--ASCII Art-->
+                <TextBlock Text="S T I T C H"
+                          Foreground="White"
+                          FontFamily="Consolas"
+                          FontSize="24"
+                          FontWeight="Bold"
+                          TextAlignment="Center"
+                          Margin="0,10,0,0"/>
+
+                <TextBlock x:Name="UserGreetingText"
+                          Text="Hello User, I am Stitch. Ask me about password safety, phishing, and safe browsing."
+                          Foreground="White"
+                          FontSize="14"
+                          TextAlignment="Center"
+                          Margin="0,10,0,0"
+                          TextWrapping="Wrap"/>
+            </StackPanel>
+        </Border>
+
+        <!--Chat-->
+        <Border Grid.Row="1" Background="#FF111827" Margin="10">
+            <ScrollViewer x:Name="ChatScrollViewer" 
+                         VerticalScrollBarVisibility="Auto"
+                         HorizontalScrollBarVisibility="Disabled">
+                <StackPanel x:Name="ChatPanel" Margin="10"/>
+            </ScrollViewer>
+        </Border>
+
+        <!--User Info-->
+        <Border Grid.Row="2" Background="#FF374151" Padding="10" Margin="10,0">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="User:" Foreground="White" FontWeight="Bold" Margin="0,0,10,0"/>
+                <TextBlock x:Name="UserNameDisplay" Text="Not set" Foreground="#FF6366F1" FontWeight="Bold"/>
+                <TextBlock Text="Interests:" Foreground="White" FontWeight="Bold" Margin="20,0,10,0"/>
+                <TextBlock x:Name="InterestsDisplay" Text="None" Foreground="#FFF59E0B" TextWrapping="Wrap"/>
+            </StackPanel>
+        </Border>
+
+        <!--Input-->
+        <Border Grid.Row="3" Background="#FF374151" Padding="15">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBox x:Name="UserInputBox"
+                        Grid.Column="0"
+                        Background="#FF111827"
+                        Foreground="White"
+                        FontSize="14"
+                        Padding="12,10"
+                        BorderBrush="#FF6366F1"
+                        BorderThickness="2"
+                        AcceptsReturn="False"
+                        TextWrapping="Wrap"
+                        MaxHeight="100"
+                        VerticalScrollBarVisibility="Auto"
+                        KeyDown="UserInputBox_KeyDown"
+                        IsEnabled="False"/>
+
+                <Button x:Name="SendButton"
+                       Grid.Column="1"
+                       Content="Send"
+                       Background="#FF6366F1"
+                       Foreground="White"
+                       FontWeight="Bold"
+                       Padding="20,10"
+                       Margin="10,0,0,0"
+                       BorderThickness="0"
+                       Click="SendButton_Click"
+                       IsEnabled="False"/>
+
+                <Button x:Name="VoiceButton"
+                       Grid.Column="2"
+                       Content="🔊"
+                       Background="#FF10B981"
+                       Foreground="White"
+                       FontWeight="Bold"
+                       Padding="15,10"
+                       Margin="10,0,0,0"
+                       BorderThickness="0"
+                       Click="VoiceButton_Click"
+                       ToolTip="Play Stitch Voice"/>
+            </Grid>
+        </Border>
+
+       
+        <Border x:Name="NameInputDialog"
+               Grid.RowSpan="4"
+               Background="#AA000000"
+               Visibility="Visible">
+            <Border Background="#FF1E1E2E" 
+                   Padding="30"
+                   CornerRadius="10"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   MinWidth="300">
+                <StackPanel>
+                    <TextBlock Text="Welcome to Stitch!"
+                              Foreground="White"
+                              FontSize="20"
+                              FontWeight="Bold"
+                              TextAlignment="Center"
+                              Margin="0,0,0,20"/>
+
+                    <TextBlock Text="What is your name?"
+                              Foreground="White"
+                              FontSize="14"
+                              TextAlignment="Center"
+                              Margin="0,0,0,15"/>
+
+                    <TextBox x:Name="NameInputBox"
+                            Background="#FF374151"
+                            Foreground="White"
+                            FontSize="14"
+                            Padding="10"
+                            BorderBrush="#FF6366F1"
+                            BorderThickness="2"
+                            KeyDown="NameInputBox_KeyDown"/>
+
+                    <Button x:Name="NameSubmitButton"
+                           Content="Start Chat"
+                           Background="#FF6366F1"
+                           Foreground="White"
+                           FontWeight="Bold"
+                           Padding="15,10"
+                           Margin="0,15,0,0"
+                           BorderThickness="0"
+                           Click="NameSubmitButton_Click"/>
+                </StackPanel>
+            </Border>
+        </Border>
+    </Grid>
+</Window>

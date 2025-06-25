@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using NAudio.Wave;
@@ -83,7 +84,7 @@ namespace ST10439055_PROG_POE_WPF
 
         private void ProcessNameInput()
         {
-            if (userMemory == null || NameInputBox == null || UserNameDisplay == null || UserGreetingText == null || NameInputDialog == null || UserInputBox == null || SendButton == null) return;
+            if (userMemory == null || NameInputBox == null || UserGreetingText == null || NameInputDialog == null || UserInputBox == null || SendButton == null) return;
             string userName = NameInputBox.Text.Trim();
             if (string.IsNullOrWhiteSpace(userName))
             {
@@ -91,7 +92,6 @@ namespace ST10439055_PROG_POE_WPF
                 return;
             }
             userMemory.UserName = userName;
-            UserNameDisplay.Text = userName;
             UserGreetingText.Text = $"Hello {userName}, I am Stitch. Ask me about password safety, phishing, and safe browsing.\nI'm here to help you stay secure online!\nI also know about VPNs, password managers, and cyber threats.";
             NameInputDialog.Visibility = Visibility.Collapsed;
             UserInputBox.IsEnabled = true;
@@ -127,7 +127,7 @@ namespace ST10439055_PROG_POE_WPF
             string userInput = UserInputBox.Text.Trim();
             if (string.IsNullOrWhiteSpace(userInput))
             {
-                MessageBox.Show("", "Empty Message", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Please type something!", "Empty Message", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
             if (IsExitCommand(userInput))
@@ -140,7 +140,7 @@ namespace ST10439055_PROG_POE_WPF
                 return;
             }
             AddUserMessage(userInput);
-            UserInputBox.Text = string.IsNullOrWhiteSpace(userInput) ? """";
+            UserInputBox.Text = "";
             ProcessChatInput(userInput);
         }
 
@@ -152,20 +152,18 @@ namespace ST10439055_PROG_POE_WPF
 
         private void ProcessChatInput(string input)
         {
-            if (userMemory == null || sentimentDetector == null || interestDetector == null) return;
+            if (userMemory == null || sentimentDetector == null || interestDetector == null || QuizPopup == null) return;
             userMemory.AddToConversationHistory(input);
             LogActivity($"User input: {input}");
             string detectedSentiment = sentimentDetector.DetectSentiment(input);
             if (!string.IsNullOrEmpty(detectedSentiment))
             {
                 userMemory.CurrentMood = detectedSentiment;
-                UpdateMoodDisplay();
             }
             string detectedInterest = interestDetector.DetectInterest(input);
             if (!string.IsNullOrEmpty(detectedInterest))
             {
                 userMemory.AddInterest(detectedInterest);
-                UpdateInterestsDisplay();
             }
             if (HandleNLPInput(input)) return;
             bool handledBasic = TryHandleBasicQuestions(input);
@@ -191,6 +189,17 @@ namespace ST10439055_PROG_POE_WPF
                         ProvideDefaultResponse();
                     }
                 }
+            }
+            // Enhanced quiz trigger
+            string lowerInput = input.ToLower();
+            string[] quizTriggers = { "quiz", "game", "play", "test", "challenge" };
+            if (quizTriggers.Any(trigger => lowerInput.Contains(trigger)))
+            {
+                currentQuizIndex = 0;
+                quizScore = 0;
+                QuizPopup.Visibility = Visibility.Visible;
+                LoadNextQuizQuestion();
+                AddBotMessage("Starting quiz! Select an answer and submit to begin.");
             }
         }
 
@@ -279,7 +288,7 @@ namespace ST10439055_PROG_POE_WPF
             }
             else if (lowerInput.Contains("ask") || lowerInput.Contains("questions"))
             {
-                response = "You can ask me about:\n• Password safety\n• Phishing\n• Safe browsing\n• VPNs\n• Password managers\n• Cyber threats\nOr start a quiz with 'Start Quiz'!";
+                response = "You can ask me about:\n• Password safety\n• Phishing\n• Safe browsing\n• VPNs\n• Password managers\n• Cyber threats\nOr start a quiz with 'quiz'!";
                 userMemory.SetLastTopic("topics");
             }
             else if (lowerInput.Contains("hello") || lowerInput.Contains("hi") || lowerInput.Contains("greetings"))
@@ -431,26 +440,13 @@ namespace ST10439055_PROG_POE_WPF
             AddBotMessage(defaultResponses[random.Next(defaultResponses.Length)]);
         }
 
-        private void UpdateMoodDisplay()
-        {
-            if (MoodDisplay == null || userMemory == null) return;
-            MoodDisplay.Text = string.IsNullOrEmpty(userMemory.CurrentMood) ? "Unknown" : char.ToUpper(userMemory.CurrentMood[0]) + userMemory.CurrentMood.Substring(1);
-        }
-
-        private void UpdateInterestsDisplay()
-        {
-            if (InterestsDisplay == null || userMemory == null) return;
-            var interests = userMemory.GetInterests();
-            InterestsDisplay.Text = interests.Count == 0 ? "None" : string.Join(", ", interests);
-        }
-
         private void AddUserMessage(string message)
         {
             if (ChatPanel == null) return;
             var border = new Border();
             border.Style = (Style)FindResource("ChatBubbleUser");
             var textBlock = new TextBlock();
-            textBlock.Style = (Style)FindResource("ChatText");
+            textBlock.Style = (Style)FindResource("UserChatText");
             textBlock.Text = message;
             border.Child = textBlock;
             ChatPanel.Children.Add(border);
@@ -463,7 +459,7 @@ namespace ST10439055_PROG_POE_WPF
             var border = new Border();
             border.Style = (Style)FindResource("ChatBubbleBot");
             var textBlock = new TextBlock();
-            textBlock.Style = (Style)FindResource("ChatText");
+            textBlock.Style = (Style)FindResource("BotChatText");
             textBlock.Text = message;
             border.Child = textBlock;
             ChatPanel.Children.Add(border);
@@ -527,14 +523,14 @@ namespace ST10439055_PROG_POE_WPF
         private void AddTaskButton_Click(object sender, RoutedEventArgs e)
         {
             if (TaskTitleBox == null || TaskDescriptionBox == null || TaskReminderDate == null) return;
-            if (TaskTitleBox.Text.Trim().Length == 0) return;
+            if (string.IsNullOrWhiteSpace(TaskTitleBox.Text) || TaskTitleBox.Text == "Enter task title...") return;
             var task = new TaskItem { Title = TaskTitleBox.Text.Trim(), Description = TaskDescriptionBox.Text.Trim(), Reminder = TaskReminderDate.SelectedDate };
             tasks.Add(task);
             UpdateTaskList();
             AddBotMessage($"Task added: '{task.Title}' with reminder on {task.Reminder?.ToShortDateString() ?? "none"}.");
             LogActivity($"Task added: {task.Title}");
-            TaskTitleBox.Text = string.IsNullOrWhiteSpace(TaskTitleBox.Text) ? "Enter task title..." : "";
-            TaskDescriptionBox.Text = string.IsNullOrWhiteSpace(TaskDescriptionBox.Text) ? "Enter description..." : "";
+            TaskTitleBox.Text = "Enter task title...";
+            TaskDescriptionBox.Text = "Enter description...";
             TaskReminderDate.SelectedDate = null;
         }
 
@@ -577,20 +573,9 @@ namespace ST10439055_PROG_POE_WPF
             if (TaskPopup != null) TaskPopup.Visibility = Visibility.Collapsed;
         }
 
-        private void StartQuizButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (QuizPopup != null)
-            {
-                currentQuizIndex = 0;
-                quizScore = 0;
-                QuizPopup.Visibility = Visibility.Visible;
-                LoadNextQuizQuestion();
-            }
-        }
-
         private void LoadNextQuizQuestion()
         {
-            if (QuizQuestionText == null || QuizOptionsList == null || QuizScoreText == null) return;
+            if (QuizQuestionText == null || QuizOptionsList == null || QuizScoreText == null || QuizFeedbackText == null) return;
             if (currentQuizIndex >= quizQuestions.Count)
             {
                 EndQuizButton_Click(null, null);
@@ -606,7 +591,11 @@ namespace ST10439055_PROG_POE_WPF
         private void SubmitAnswerButton_Click(object sender, RoutedEventArgs e)
         {
             if (QuizOptionsList == null || QuizFeedbackText == null) return;
-            if (QuizOptionsList.SelectedItem == null) return;
+            if (QuizOptionsList.SelectedItem == null)
+            {
+                QuizFeedbackText.Text = "Please select an answer.";
+                return;
+            }
             string selectedAnswer = QuizOptionsList.SelectedItem.ToString();
             bool isCorrect = selectedAnswer == quizQuestions[currentQuizIndex].CorrectAnswer;
             if (isCorrect) quizScore++;
@@ -624,16 +613,42 @@ namespace ST10439055_PROG_POE_WPF
                 AddBotMessage($"Quiz ended. Your score: {quizScore}/10. {feedback}");
                 QuizPopup.Visibility = Visibility.Collapsed;
                 LogActivity($"Quiz ended with score: {quizScore}/10");
+                currentQuizIndex = 0;
+                quizScore = 0;
             }
         }
 
         private void ShowActivityLog()
         {
             if (userMemory == null) return;
-            string log = "Here's a summary of recent actions:\n";
-            for (int i = 0; i < Math.Min(MaxLogEntries, activityLog.Count); i++)
+            string log = "Activity Log:\n";
+            var relevantLogs = activityLog.Where(entry =>
+                entry.Description.StartsWith("Task added:") ||
+                entry.Description.StartsWith("Task marked complete") ||
+                entry.Description.Contains("Quiz ended with score:")).ToList();
+
+            relevantLogs.Sort((a, b) => a.Timestamp.CompareTo(b.Timestamp)); // Sort from oldest to newest
+
+            for (int i = 0; i < relevantLogs.Count; i++)
             {
-                log += $"{i + 1}. {activityLog[activityLog.Count - 1 - i].Description} at {activityLog[activityLog.Count - 1 - i].Timestamp}\n";
+                string entry = relevantLogs[i].Description;
+                if (entry.StartsWith("Task added:"))
+                {
+                    log += $"{i + 1}. Task created: {entry.Substring(11)}\n";
+                }
+                else if (entry.StartsWith("Task marked complete"))
+                {
+                    log += $"{i + 1}. Task completed\n";
+                }
+                else if (entry.Contains("Quiz ended with score:"))
+                {
+                    string scorePart = entry.Split("Quiz ended with score:")[1].Trim();
+                    log += $"{i + 1}. Quiz completed with {scorePart}\n";
+                }
+            }
+            if (string.IsNullOrEmpty(log.Trim().Substring("Activity Log:\n".Length)))
+            {
+                log += "No relevant activities recorded.";
             }
             AddBotMessage(log);
         }

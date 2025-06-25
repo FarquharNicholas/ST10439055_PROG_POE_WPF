@@ -46,16 +46,26 @@ namespace ST10439055_PROG_POE_WPF
 
         private void InitializeQuizQuestions()
         {
-            quizQuestions.Add(new QuizQuestion("What should you do if you receive an email asking for your password?", new[] { "A) Reply with your password", "B) Delete the email", "C) Report the email as phishing", "D) Ignore it" }, "C", "Reporting phishing emails helps prevent scams."));
-            quizQuestions.Add(new QuizQuestion("True or False: A strong password should include personal information like your birthdate.", new[] { "True", "False" }, "False", "Personal information makes passwords easier to guess."));
-            quizQuestions.Add(new QuizQuestion("Which of these is a safe browsing practice?", new[] { "A) Clicking on unknown links", "B) Using HTTPS websites", "C) Downloading files from untrusted sites", "D) Ignoring software updates" }, "B", "HTTPS encrypts your connection, protecting your data."));
-            quizQuestions.Add(new QuizQuestion("What is a common sign of a phishing attempt?", new[] { "A) Professional email design", "B) Urgent language", "C) Verified sender address", "D) Clear company logo" }, "B", "Urgent language is often used to pressure victims."));
-            quizQuestions.Add(new QuizQuestion("True or False: Social engineering relies on technical hacking.", new[] { "True", "False" }, "False", "Social engineering exploits human psychology, not just technical methods."));
-            quizQuestions.Add(new QuizQuestion("Which password is the strongest?", new[] { "A) Password123", "B) Tr0ub4dor&3", "C) MyName2023", "D) 12345678" }, "B", "A mix of letters, numbers, and symbols with no personal info is strongest."));
-            quizQuestions.Add(new QuizQuestion("What should you do to protect against malware?", new[] { "A) Open all email attachments", "B) Use updated antivirus software", "C) Disable firewall", "D) Share passwords" }, "B", "Antivirus software helps detect and remove malware."));
-            quizQuestions.Add(new QuizQuestion("True or False: Public Wi-Fi is safe for online banking.", new[] { "True", "False" }, "False", "Public Wi-Fi can be insecure; use a VPN instead."));
-            quizQuestions.Add(new QuizQuestion("Which is a safe way to spot phishing emails?", new[] { "A) Checking the sender’s email address", "B) Clicking all links", "C) Replying to verify", "D) Ignoring grammar errors" }, "A", "Verifying the sender’s address helps identify fakes."));
-            quizQuestions.Add(new QuizQuestion("What is a benefit of two-factor authentication (2FA)?", new[] { "A) Easier password creation", "B) Extra security layer", "C) Faster logins", "D) Less device usage" }, "B", "2FA adds an additional step to verify your identity."));
+            quizQuestions.Add(new QuizQuestion("What should you do if you receive an email asking for your password?", 
+                new[] { "A) Reply with your password", "B) Delete the email", "C) Report the email as phishing", "D) Ignore it" }, "C", "Reporting phishing emails helps prevent scams."));
+            quizQuestions.Add(new QuizQuestion("True or False: A strong password should include personal information like your birthdate.",
+                new[] { "True", "False" }, "False", "Personal information makes passwords easier to guess."));
+            quizQuestions.Add(new QuizQuestion("Which of these is a safe browsing practice?", 
+                new[] { "A) Clicking on unknown links", "B) Using HTTPS websites", "C) Downloading files from untrusted sites", "D) Ignoring software updates" }, "B", "HTTPS encrypts your connection, protecting your data."));
+            quizQuestions.Add(new QuizQuestion("What is a common sign of a phishing attempt?",
+                new[] { "A) Professional email design", "B) Urgent language", "C) Verified sender address", "D) Clear company logo" }, "B", "Urgent language is often used to pressure victims."));
+            quizQuestions.Add(new QuizQuestion("True or False: Social engineering relies on technical hacking.",
+                new[] { "True", "False" }, "False", "Social engineering exploits human psychology, not just technical methods."));
+            quizQuestions.Add(new QuizQuestion("Which password is the strongest?", 
+                new[] { "A) Password123", "B) Tr0ub4dor&3", "C) MyName2023", "D) 12345678" }, "B", "A mix of letters, numbers, and symbols with no personal info is strongest."));
+            quizQuestions.Add(new QuizQuestion("What should you do to protect against malware?", 
+                new[] { "A) Open all email attachments", "B) Use updated antivirus software", "C) Disable firewall", "D) Share passwords" }, "B", "Antivirus software helps detect and remove malware."));
+            quizQuestions.Add(new QuizQuestion("True or False: Public Wi-Fi is safe for online banking.", 
+                new[] { "True", "False" }, "False", "Public Wi-Fi can be insecure; use a VPN instead."));
+            quizQuestions.Add(new QuizQuestion("Which is a safe way to spot phishing emails?",
+                new[] { "A) Checking the sender’s email address", "B) Clicking all links", "C) Replying to verify", "D) Ignoring grammar errors" }, "A", "Verifying the sender’s address helps identify fakes."));
+            quizQuestions.Add(new QuizQuestion("What is a benefit of two-factor authentication (2FA)?", 
+                new[] { "A) Easier password creation", "B) Extra security layer", "C) Faster logins", "D) Less device usage" }, "B", "2FA adds an additional step to verify your identity."));
         }
 
         private void SetWelcomeMessage()
@@ -564,7 +574,7 @@ namespace ST10439055_PROG_POE_WPF
                 tasks[TaskListBox.SelectedIndex].IsComplete = true;
                 UpdateTaskList();
                 AddBotMessage("Task marked as complete.");
-                LogActivity("Task marked complete");
+                LogActivity($"Task completed: {tasks[TaskListBox.SelectedIndex].Title}");
             }
         }
 
@@ -622,33 +632,64 @@ namespace ST10439055_PROG_POE_WPF
         {
             if (userMemory == null) return;
             string log = "Activity Log:\n";
-            var relevantLogs = activityLog.Where(entry =>
-                entry.Description.StartsWith("Task added:") ||
-                entry.Description.StartsWith("Task marked complete") ||
-                entry.Description.Contains("Quiz ended with score:")).ToList();
 
-            relevantLogs.Sort((a, b) => a.Timestamp.CompareTo(b.Timestamp)); // Sort from oldest to newest
-
-            for (int i = 0; i < relevantLogs.Count; i++)
+           
+            var quizLogs = activityLog.Where(entry => entry.Description.Contains("Quiz ended with score:") || entry.Description.Contains("Quiz question")).ToList();
+            if (quizLogs.Any())
             {
-                string entry = relevantLogs[i].Description;
-                if (entry.StartsWith("Task added:"))
+                log += "\nQuizzes:\n";
+                foreach (var entry in quizLogs.OrderBy(e => e.Timestamp))
                 {
-                    log += $"{i + 1}. Task created: {entry.Substring(11)}\n";
-                }
-                else if (entry.StartsWith("Task marked complete"))
-                {
-                    log += $"{i + 1}. Task completed\n";
-                }
-                else if (entry.Contains("Quiz ended with score:"))
-                {
-                    string scorePart = entry.Split("Quiz ended with score:")[1].Trim();
-                    log += $"{i + 1}. Quiz completed with {scorePart}\n";
+                    if (entry.Description.Contains("Quiz ended with score:"))
+                    {
+                        string scorePart = entry.Description.Split("Quiz ended with score:")[1].Trim();
+                        log += $"- {entry.Timestamp:yyyy-MM-dd HH:mm:ss}: {scorePart}\n";
+                    }
+                    else if (entry.Description.Contains("Quiz question"))
+                    {
+                        log += $"- {entry.Timestamp:yyyy-MM-dd HH:mm:ss}: Question answered\n";
+                    }
                 }
             }
+
+            
+            var addedTasks = activityLog.Where(entry => entry.Description.StartsWith("Task added:")).ToList();
+            if (addedTasks.Any())
+            {
+                log += "\nTasks Added:\n";
+                foreach (var entry in addedTasks.OrderBy(e => e.Timestamp))
+                {
+                    string taskTitle = entry.Description.Substring("Task added: ".Length);
+                    log += $"- {entry.Timestamp:yyyy-MM-dd HH:mm:ss}: {taskTitle}\n";
+                }
+            }
+
+           
+            var completedTasks = activityLog.Where(entry => entry.Description.StartsWith("Task completed:")).ToList();
+            if (completedTasks.Any())
+            {
+                log += "\nTasks Completed:\n";
+                foreach (var entry in completedTasks.OrderBy(e => e.Timestamp))
+                {
+                    string taskTitle = entry.Description.Substring("Task completed: ".Length);
+                    log += $"- {entry.Timestamp:yyyy-MM-dd HH:mm:ss}: {taskTitle}\n";
+                }
+            }
+
+            
+            var pendingTasks = tasks.Where(t => !t.IsComplete).ToList();
+            if (pendingTasks.Any())
+            {
+                log += "\nTasks Not Done:\n";
+                foreach (var task in pendingTasks)
+                {
+                    log += $"- {DateTime.Now:yyyy-MM-dd HH:mm:ss}: {task.Title} (Pending)\n";
+                }
+            }
+
             if (string.IsNullOrEmpty(log.Trim().Substring("Activity Log:\n".Length)))
             {
-                log += "No relevant activities recorded.";
+                log += "No activities recorded.";
             }
             AddBotMessage(log);
         }

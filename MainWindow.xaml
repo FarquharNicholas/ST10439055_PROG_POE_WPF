@@ -7,7 +7,7 @@
         Background="#FFFAFAFA">
 
     <Window.Resources>
-        <!-- Google-inspired Button Style -->
+        
         <Style x:Key="GoogleButton" TargetType="Button">
             <Setter Property="Background" Value="#FF34A853"/>
             <Setter Property="Foreground" Value="White"/>
@@ -37,7 +37,7 @@
             </Setter>
         </Style>
 
-        <!-- Secondary Button Style -->
+       
         <Style x:Key="GoogleSecondaryButton" TargetType="Button">
             <Setter Property="Background" Value="White"/>
             <Setter Property="Foreground" Value="#FF34A853"/>
@@ -70,7 +70,7 @@
             </Setter>
         </Style>
 
-        <!-- Google-inspired TextBox Style -->
+       
         <Style x:Key="GoogleTextBox" TargetType="TextBox">
             <Setter Property="Background" Value="White"/>
             <Setter Property="Foreground" Value="#FF202124"/>
@@ -152,7 +152,7 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <!-- Header Section -->
+       
         <Border Grid.Row="0" Background="White" Padding="24,20" BorderBrush="#FFE0E0E0" BorderThickness="0,0,0,1">
             <Border.Effect>
                 <DropShadowEffect Color="#33000000" BlurRadius="8" ShadowDepth="1" Opacity="0.1"/>
@@ -167,26 +167,30 @@
                            FontFamily="Segoe UI"/>
 
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,12,0,0">
-                    <TextBlock Text="S" Foreground="#FF34A853" FontFamily="Segoe UI" FontSize="32" FontWeight="Bold"/>
-                    <TextBlock Text="T" Foreground="#FFEA4335" FontFamily="Segoe UI" FontSize="32" FontWeight="Bold"/>
-                    <TextBlock Text="I" Foreground="#FFFBBC04" FontFamily="Segoe UI" FontSize="32" FontWeight="Bold"/>
-                    <TextBlock Text="T" Foreground="#FF34A853" FontFamily="Segoe UI" FontSize="32" FontWeight="Bold"/>
-                    <TextBlock Text="C" Foreground="#FFEA4335" FontFamily="Segoe UI" FontSize="32" FontWeight="Bold"/>
-                    <TextBlock Text="H" Foreground="#FF4285F4" FontFamily="Segoe UI" FontSize="32" FontWeight="Bold"/>
+                    <TextBlock Text="STITCH" Foreground="#FF34A853" FontFamily="Segoe UI" FontSize="32" FontWeight="Bold"/>
                 </StackPanel>
 
                 <TextBlock x:Name="UserGreetingText"
-                           Text="Hello User, I am Stitch. Ask me about password safety, phishing, and safe browsing."
+                           Text=""
                            Foreground="#FF5F6368"
                            FontSize="14"
                            TextAlignment="Center"
                            Margin="0,12,0,0"
                            TextWrapping="Wrap"
                            FontFamily="Segoe UI"/>
+
+                <TextBlock x:Name="ExtraInfoText"
+           Text="You can play a quiz game with me and i can set reminders for you."
+           Foreground="#FF5F6368"
+           FontSize="14"
+           TextAlignment="Center"
+           Margin="0,12,0,0"
+           TextWrapping="Wrap"
+           FontFamily="Segoe UI"/>
             </StackPanel>
         </Border>
 
-        <!-- Chat Area -->
+        
         <Border Grid.Row="1" Background="#FFF8F9FA" Margin="0">
             <ScrollViewer x:Name="ChatScrollViewer" 
                          VerticalScrollBarVisibility="Auto"
@@ -196,7 +200,7 @@
             </ScrollViewer>
         </Border>
 
-        <!-- User Info Bar -->
+        
         <Border Grid.Row="2" Background="White" Padding="16,12" BorderBrush="#FFE0E0E0" BorderThickness="0,1,0,1">
             <Grid>
                 <Grid.ColumnDefinitions>

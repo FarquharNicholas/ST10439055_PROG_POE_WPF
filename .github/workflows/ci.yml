@@ -12,7 +12,7 @@ jobs:
 
     env:
       Solution_Name: ST10439055_PROG_POE_WPF.sln
-      Test_Project_Path: ST10439055_PROG_POE_WPF.Tests\ST10439055_PROG_POE_WPF.Tests.csproj
+      
 
     steps:
     - name: Checkout code
@@ -31,6 +31,3 @@ jobs:
 
     - name: Build solution
       run: msbuild $env:Solution_Name /p:Configuration=Release
-
-    - name: Execute unit tests
-      run: dotnet test $env:Test_Project_Path

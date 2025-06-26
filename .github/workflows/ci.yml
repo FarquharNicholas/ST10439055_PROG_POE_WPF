@@ -1,0 +1,35 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    env:
+      Solution_Name: ST10439055_PROG_POE_WPF.sln
+      Test_Project_Path: ST10439055_PROG_POE_WPF.Tests\ST10439055_PROG_POE_WPF.Tests.csproj
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v2
+
+    - name: Restore dependencies
+      run: msbuild $env:Solution_Name /t:Restore
+
+    - name: Build solution
+      run: msbuild $env:Solution_Name /p:Configuration=Release
+
+    - name: Execute unit tests
+      run: dotnet test $env:Test_Project_Path

@@ -210,7 +210,7 @@
                 <StackPanel Orientation="Horizontal">
                 </StackPanel>
                 <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
-                    <Button x:Name="ViewTasksButton" Content="View Tasks" Click="ViewTasksButton_Click" 
+                    <Button x:Name="ViewTasksButton" Content="View Reminders" Click="ViewTasksButton_Click" 
                             Margin="0,0,8,0" Style="{StaticResource GoogleSecondaryButton}"/>
                 </StackPanel>
             </Grid>
@@ -314,14 +314,14 @@
                     <DropShadowEffect Color="#33000000" BlurRadius="16" ShadowDepth="4" Opacity="0.2"/>
                 </Border.Effect>
                 <StackPanel>
-                    <TextBlock Text="Task Manager" Foreground="#FF202124" FontSize="20" FontWeight="Medium" TextAlignment="Center" Margin="0,0,0,20" FontFamily="Segoe UI"/>
-                    <TextBlock Text="Task Title:" Foreground="#FF5F6368" FontSize="14" FontWeight="Medium" Margin="0,0,0,4" FontFamily="Segoe UI"/>
+                    <TextBlock Text="Reminder Manager" Foreground="#FF202124" FontSize="20" FontWeight="Medium" TextAlignment="Center" Margin="0,0,0,20" FontFamily="Segoe UI"/>
+                    <TextBlock Text="Reminder Title:" Foreground="#FF5F6368" FontSize="14" FontWeight="Medium" Margin="0,0,0,4" FontFamily="Segoe UI"/>
                     <TextBox x:Name="TaskTitleBox" Style="{StaticResource GoogleTextBox}" Margin="0,0,0,16" TextChanged="TaskTitleBox_TextChanged"/>
                     <TextBlock Text="Description:" Foreground="#FF5F6368" FontSize="14" FontWeight="Medium" Margin="0,0,0,4" FontFamily="Segoe UI"/>
                     <TextBox x:Name="TaskDescriptionBox" Style="{StaticResource GoogleTextBox}" Margin="0,0,0,16" TextWrapping="Wrap" Height="80" TextChanged="TaskDescriptionBox_TextChanged"/>
                     <TextBlock Text="Reminder Date:" Foreground="#FF5F6368" FontSize="14" FontWeight="Medium" Margin="0,0,0,4" FontFamily="Segoe UI"/>
                     <DatePicker x:Name="TaskReminderDate" Margin="0,0,0,16" Background="White" BorderBrush="#FFE0E0E0"/>
-                    <Button x:Name="AddTaskButton" Content="Add Task" Click="AddTaskButton_Click" Style="{StaticResource GoogleButton}" HorizontalAlignment="Left" Margin="0,0,0,16"/>
+                    <Button x:Name="AddTaskButton" Content="Add Reminder" Click="AddTaskButton_Click" Style="{StaticResource GoogleButton}" HorizontalAlignment="Left" Margin="0,0,0,16"/>
                     <ListBox x:Name="TaskListBox" Height="120" Background="White" Foreground="#FF202124" BorderBrush="#FFE0E0E0" Margin="0,0,0,16"/>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,0,16">
                         <Button x:Name="DeleteTaskButton" Content="Delete" Click="DeleteTaskButton_Click" Style="{StaticResource GoogleSecondaryButton}" Margin="0,0,8,0"/>

@@ -34,7 +34,8 @@ Prerequisites
 - Visual Studio 2019/2022 (for development and building).
 - NAudio Library (for voice playback; install via NuGet Package Manager).
 
-### Steps
-1. **Clone the Repository**:
-   ```bash
+Clone the Repository:
    git clone https://github.com/yourusername/ST10439055_PROG_POE_WPF.git
+
+Presentatoin: 
+   https://youtu.be/odsV6x_RCNk
